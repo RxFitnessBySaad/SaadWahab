@@ -124,7 +124,7 @@
             content: '';
             position: fixed;
             inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' fill='%23080808' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' seed='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E");
             pointer-events: none;
             z-index: 0;
             opacity: 0.4;
@@ -617,200 +617,561 @@
             margin-bottom: 2rem;
         }
 
-        /* Exercise Library Styles */
-        #exercise-library {
+        #about {
             padding: 8rem 0;
-            background: var(--black);
+            background: var(--dark1);
         }
-        
-        .exercise-header {
-            text-align: center;
-            margin-bottom: 4rem;
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
         }
-
-        .exercise-filters {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 3rem;
+        .about-visual {
+            position: relative;
         }
-
-        .exercise-filter-btn {
-            background: var(--dark2);
+        .about-frame {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: var(--dark3);
             border: 1px solid rgba(212, 175, 55, 0.2);
-            color: var(--light-gray);
-            padding: 0.7rem 1.8rem;
-            border-radius: 25px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 4px;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        .exercise-filter-btn::before {
+        .about-frame::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: var(--gold);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s;
-            z-index: -1;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, transparent 60%);
         }
-
-        .exercise-filter-btn:hover {
-            border-color: var(--gold);
-            color: var(--gold);
+        .about-logo-img {
+            width: 88%;
+            height: 88%;
+            object-fit: contain;
+            mix-blend-mode: screen;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.6s ease;
         }
-
-        .exercise-filter-btn:hover::before {
-            transform: scaleX(1);
+        .about-frame:hover .about-logo-img {
+            transform: scale(1.05);
         }
-
-        .exercise-filter-btn.active {
+        .about-pharmd-badge {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
             background: var(--gold);
             color: var(--black);
-            border-color: var(--gold);
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            padding: 0.6rem 1rem;
+            border-radius: 2px;
+            z-index: 2;
         }
-
-        .exercise-grid {
+        .about-corner-tl,
+        .about-corner-br {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+        }
+        .about-corner-tl {
+            top: -10px;
+            left: -10px;
+            border-top: 2px solid var(--gold);
+            border-left: 2px solid var(--gold);
+        }
+        .about-corner-br {
+            bottom: -10px;
+            right: -10px;
+            border-bottom: 2px solid var(--gold);
+            border-right: 2px solid var(--gold);
+        }
+        .about-text p {
+            color: #aaa;
+            line-height: 1.9;
+            font-size: 0.97rem;
+            margin-bottom: 1.2rem;
+            font-weight: 300;
+        }
+        .about-text p strong {
+            color: var(--gold);
+            font-weight: 600;
+        }
+        .about-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+        .stat-box {
+            background: var(--dark2);
+            border: 1px solid rgba(212, 175, 55, 0.12);
+            padding: 1.2rem;
+            border-radius: 4px;
+            text-align: center;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .stat-box:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-3px);
+        }
+        .stat-num {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+            display: block;
+        }
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--gray);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 0.2rem;
+            display: block;
+        }
+        .dual-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+        }
+        .dual-badge span {
+            color: var(--gold);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+        }
+        .dual-badge .sep {
+            color: rgba(212, 175, 55, 0.4);
         }
 
-        .exercise-card {
+        #plans {
+            padding: 8rem 0;
+            background: var(--black);
+        }
+        .plans-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+        .plan-card {
             background: var(--dark2);
             border: 1px solid rgba(212, 175, 55, 0.1);
             border-radius: 8px;
+            padding: 2.5rem 2rem;
+            position: relative;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.4s, box-shadow 0.4s;
+            cursor: default;
         }
-
-        .exercise-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(212, 175, 55, 0.4);
-            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.15);
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            transform: scaleX(0);
+            transition: transform 0.4s;
         }
-
-        .exercise-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+        .plan-card:hover::before {
+            transform: scaleX(1);
+        }
+        .plan-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(212, 175, 55, 0.35);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(212, 175, 55, 0.08);
+        }
+        .plan-card.featured {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.03) 100%);
+            border-color: rgba(212, 175, 55, 0.35);
+        }
+        .plan-card.featured::before {
+            transform: scaleX(1);
+        }
+        .plan-badge-popular {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            background: var(--gold);
+            color: var(--black);
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.25rem 0.7rem;
+            border-radius: 2px;
+        }
+        .plan-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.5rem;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
-            transition: background 0.3s;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: background 0.3s, transform 0.3s;
         }
-
-        .exercise-card:hover .exercise-image {
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.08));
+        .plan-card:hover .plan-icon {
+            background: rgba(212, 175, 55, 0.18);
+            transform: scale(1.1) rotate(5deg);
         }
-
-        .exercise-info {
-            padding: 1.8rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .exercise-category {
-            display: inline-block;
-            background: rgba(212, 175, 55, 0.1);
-            color: var(--gold);
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            padding: 0.35rem 0.8rem;
-            border-radius: 15px;
-            margin-bottom: 0.8rem;
-            width: fit-content;
-        }
-
-        .exercise-name {
+        .plan-name {
             font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--white);
             margin-bottom: 0.6rem;
+            letter-spacing: 0.05em;
         }
-
-        .exercise-desc {
-            color: #888;
-            font-size: 0.85rem;
-            line-height: 1.6;
-            margin-bottom: 1.2rem;
-            flex-grow: 1;
-        }
-
-        .exercise-details {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.2rem;
-            font-size: 0.78rem;
-        }
-
-        .detail-item {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            color: var(--gray);
-        }
-
-        .detail-icon {
+        .plan-sub {
             color: var(--gold);
-            font-weight: bold;
-        }
-
-        .exercise-cta {
-            display: inline-block;
-            background: transparent;
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            color: var(--gold);
-            padding: 0.6rem 1.2rem;
-            border-radius: 4px;
-            text-align: center;
             font-size: 0.75rem;
-            font-weight: 700;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            text-decoration: none;
-            transition: all 0.3s;
+            margin-bottom: 1rem;
         }
-
-        .exercise-cta:hover {
+        .plan-desc {
+            color: #888;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 1.8rem;
+            font-weight: 300;
+        }
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        .plan-features li {
+            color: #aaa;
+            font-size: 0.85rem;
+            padding: 0.45rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+        .plan-features li::before {
+            content: '✦';
+            color: var(--gold);
+            font-size: 0.6rem;
+            flex-shrink: 0;
+        }
+        .plan-cta {
+            display: block;
+            text-align: center;
+            background: transparent;
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            color: var(--gold);
+            padding: 0.75rem;
+            font-family: 'Raleway', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 2px;
+            transition: background 0.3s, color 0.3s;
+        }
+        .plan-card:hover .plan-cta {
             background: var(--gold);
             color: var(--black);
-            border-color: var(--gold);
         }
 
-        .exercise-empty {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 3rem;
-            color: var(--gray);
+        #why {
+            padding: 8rem 0;
+            background: var(--dark1);
+            overflow: hidden;
         }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
+        .why-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+        .why-features {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .why-feature {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            opacity: 0;
+            transform: translateX(-40px) skewX(4deg);
+            transition: opacity 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            padding: 1.2rem;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            background: rgba(212, 175, 55, 0.01);
+        }
+        .why-feature.visible {
+            opacity: 1;
+            transform: translateX(0) skewX(0);
+            border-color: rgba(212, 175, 55, 0.06);
+        }
+        .why-feature:hover {
+            background: rgba(212, 175, 55, 0.04);
+            border-color: rgba(212, 175, 55, 0.15);
+        }
+        .why-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: transform 0.3s, background 0.3s;
+        }
+        .why-feature:hover .why-icon {
+            transform: scale(1.1) rotate(-5deg);
+            background: rgba(212, 175, 55, 0.15);
+        }
+        .why-feature h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: var(--white);
+        }
+        .why-feature p {
+            color: #777;
+            font-size: 0.87rem;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+        .why-visual {
+            position: relative;
+        }
+        .pharmd-hexagon {
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
+            aspect-ratio: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hex-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(212, 175, 55, 0.12);
+            animation: rotateRing 20s linear infinite;
+        }
+        .hex-ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            animation-duration: 30s;
+        }
+        .hex-ring:nth-child(2) {
+            width: 75%;
+            height: 75%;
+            animation-direction: reverse;
+            animation-duration: 20s;
+        }
+        .hex-ring:nth-child(3) {
+            width: 50%;
+            height: 50%;
+            animation-duration: 15s;
+        }
+        .hex-center {
+            width: 120px;
+            height: 120px;
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        @keyframes rotateRing {
             to {
-                opacity: 1;
-                transform: translateY(0);
+                transform: rotate(360deg);
             }
+        }
+
+        #testimonials {
+            padding: 8rem 0;
+            background: var(--black);
+        }
+        .testimonials-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .testimonial-card {
+            background: var(--dark2);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 8px;
+            padding: 2rem;
+            position: relative;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(212, 175, 55, 0.25);
+        }
+        .testimonial-stars {
+            color: var(--gold);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .testimonial-text {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .testimonial-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .testimonial-name {
+            font-weight: 600;
+            color: var(--white);
+        }
+        .testimonial-title {
+            font-size: 0.8rem;
+            color: var(--gold);
+        }
+
+        #cta-section {
+            padding: 8rem 0;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(212, 175, 55, 0.02) 100%);
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .cta-content {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .cta-content h2 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        .cta-content p {
+            color: #999;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        footer {
+            padding: 4rem 0;
+            background: var(--dark2);
+            border-top: 1px solid rgba(212, 175, 55, 0.08);
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 3rem;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+            padding-bottom: 3rem;
+        }
+        .footer-col h3 {
+            color: var(--white);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+        }
+        .footer-col a,
+        .footer-col p {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            transition: color 0.3s;
+        }
+        .footer-col a:hover {
+            color: var(--gold);
+        }
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .footer-copyright {
+            color: #666;
+            font-size: 0.8rem;
+        }
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+        }
+        .footer-social {
+            width: 36px;
+            height: 36px;
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .footer-social:hover {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: rgba(212, 175, 55, 0.3);
         }
 
         @keyframes fadeIn {
@@ -821,350 +1182,466 @@
                 opacity: 1;
             }
         }
-
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
         @keyframes scrollPulse {
-            0%, 100% {
+            0%,
+            100% {
                 opacity: 1;
             }
             50% {
-                opacity: 0.5;
+                opacity: 0.3;
             }
         }
 
-        @keyframes rotateRing {
-            from {
-                transform: rotate(0deg);
+        @media (max-width: 1200px) {
+            .section-inner {
+                padding: 0 2rem;
             }
-            to {
-                transform: rotate(360deg);
+            nav {
+                padding: 0.6rem 2rem;
+            }
+            nav.scrolled {
+                padding: 0.4rem 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 0.5rem 1.5rem;
+            }
+            nav.scrolled {
+                padding: 0.3rem 1.5rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .nav-logo-img {
+                height: 46px;
+            }
+            nav.scrolled .nav-logo-img {
+                height: 40px;
+            }
+            .hamburger {
+                display: flex;
+            }
+            .section-inner {
+                padding: 0 1.5rem;
+            }
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            .why-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            .about-stats {
+                grid-template-columns: 1fr;
+            }
+            .float-socials {
+                right: -100px;
+                transition: right 0.3s;
+            }
+            .float-socials.visible {
+                right: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-logo {
+                width: 140px;
+                height: 140px;
+            }
+            .btn-gold,
+            .btn-outline {
+                padding: 0.7rem 2rem;
+                font-size: 0.75rem;
+            }
+            .about-pharmd-badge {
+                font-size: 0.6rem;
+                padding: 0.4rem 0.8rem;
+            }
+            .testimonials-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
+    <div id="scroll-progress"></div>
+    <div id="cursor"></div>
+    <div id="cursor-ring"></div>
     <div id="loader-wrapper">
         <div id="loader"></div>
     </div>
 
-    <div id="scroll-progress"></div>
-    <div id="cursor"></div>
-    <div id="cursor-ring"></div>
-
     <nav>
         <a href="#" class="nav-logo">
-            <img src="https://via.placeholder.com/200x60?text=RX+FITNESS" alt="RX Fitness Logo" class="nav-logo-img">
+            <img src="logo.png" alt="RX Fitness" class="nav-logo-img">
         </a>
         <ul class="nav-links">
             <li><a href="#hero">Home</a></li>
-            <li><a href="#exercise-library">Exercises</a></li>
+            <li><a href="#about">About</a></li>
             <li><a href="#plans">Plans</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="#" class="nav-cta">Get Started</a></li>
+            <li><a href="#why">Why Choose Us</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="#cta-section" class="nav-cta">Get Started</a></li>
         </ul>
-        <button class="lang-switch">EN</button>
-        <div class="hamburger">
+        <button class="hamburger">
             <span></span>
             <span></span>
             <span></span>
-        </div>
+        </button>
     </nav>
 
-    <!-- Hero Section -->
+    <div class="float-socials">
+        <a href="https://wa.me/1234567890" class="float-social wa" data-label="WhatsApp">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-5.031 1.378c-3.055 2.43-3.829 6.925-1.529 10.289 2.3 3.364 6.867 4.15 10.192 1.922.907-.722 1.517-1.6 1.875-2.532l-2.477-1.429c-.237.495-.62.965-1.134 1.348-1.488 1.18-3.734.588-4.514-1.319-.78-1.906.126-4.082 2.009-4.614.614-.175 1.258-.136 1.869.018l1.524-.876c-.783-.625-1.748-1.004-2.784-.985z"/></svg>
+        </a>
+        <a href="https://instagram.com" class="float-social ig" data-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1112.324 0 6.162 6.162 0 01-12.324 0zM12 16a4 4 0 110-8 4 4 0 010 8zm4.965-10.322a1.44 1.44 0 110 2.881 1.44 1.44 0 010-2.881z"/></svg>
+        </a>
+        <a href="https://facebook.com" class="float-social fb" data-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <a href="https://tiktok.com" class="float-social tt" data-label="TikTok">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.1 1.82 2.89 2.89 0 0 1 5.1-1.82V9.4a8.05 8.05 0 0 0-5.1 7.58c0 4.41 3.6 8 8 8s8-3.59 8-8c0-.12 0-.25-.02-.37A5.7 5.7 0 0 0 19.59 6.69z"/></svg>
+        </a>
+    </div>
+
+    <a href="https://wa.me/1234567890" class="wa-float-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-5.031 1.378c-3.055 2.43-3.829 6.925-1.529 10.289 2.3 3.364 6.867 4.15 10.192 1.922.907-.722 1.517-1.6 1.875-2.532l-2.477-1.429c-.237.495-.62.965-1.134 1.348-1.488 1.18-3.734.588-4.514-1.319-.78-1.906.126-4.082 2.009-4.614.614-.175 1.258-.136 1.869.018l1.524-.876c-.783-.625-1.748-1.004-2.784-.985z"/></svg>
+    </a>
+
+    <div class="chat-bubble">💬</div>
+
     <section id="hero">
         <canvas id="hero-canvas"></canvas>
         <div class="hero-grid-overlay"></div>
         <div class="hero-content">
             <div class="hero-logo-wrap">
-                <img src="https://via.placeholder.com/190x190?text=LOGO" alt="RX Fitness Logo" class="hero-logo">
+                <img src="logo.png" alt="RX Fitness Logo" class="hero-logo">
             </div>
-            <div class="hero-pill">Premium Fitness & Pharmacy</div>
+            <span class="hero-pill">PREMIUM FITNESS COACHING</span>
             <h1 class="hero-fitness">RX FITNESS</h1>
-            <p class="hero-by">by Saad</p>
-            <p class="hero-tagline">Where <em>Pharmacy Meets Performance</em> — Science-backed training with personalized supplement guidance</p>
+            <p class="hero-by">BY SAAD</p>
+            <p class="hero-tagline">Where <em>Pharmacy Meets Performance</em> — Unlock Your Potential with Science-Backed Training & Elite Coaching</p>
             <div class="hero-btns">
                 <button class="btn-gold">Start Your Journey</button>
-                <button class="btn-outline">Explore Exercises</button>
+                <button class="btn-outline">Learn More</button>
             </div>
         </div>
         <div class="hero-scroll">
-            <span>Scroll to explore</span>
+            <span>Scroll</span>
             <div class="scroll-line"></div>
         </div>
     </section>
 
-    <!-- Exercise Library Section -->
-    <section id="exercise-library">
+    <div class="wave-top">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,80C1080,77,1200,91,1200,96L1200,120L0,120Z" fill="rgba(14, 14, 14, 1)"></path>
+        </svg>
+    </div>
+
+    <section id="about">
         <div class="section-inner">
-            <div class="exercise-header">
-                <div class="section-tag">
-                    <span>Perfect Your Form</span>
-                </div>
-                <h2 class="section-title">Exercise <em>Library</em></h2>
-                <p style="color: var(--gray); font-size: 1.05rem; max-width: 600px; margin: 1rem auto;">Master proper technique with detailed guides for every muscle group. Learn from biomechanics to form cues.</p>
+            <div class="section-tag">
+                <span>ABOUT</span>
             </div>
+            <h2 class="section-title">Meet Your <em>Coach</em></h2>
+            <div class="section-divider"></div>
 
-            <div class="exercise-filters">
-                <button class="exercise-filter-btn active" data-filter="all">All Exercises</button>
-                <button class="exercise-filter-btn" data-filter="strength">Strength Training</button>
-                <button class="exercise-filter-btn" data-filter="cardio">Cardio</button>
-                <button class="exercise-filter-btn" data-filter="flexibility">Flexibility</button>
-                <button class="exercise-filter-btn" data-filter="core">Core & Stability</button>
-            </div>
-
-            <div class="exercise-grid">
-                <!-- Strength Training Exercises -->
-                <div class="exercise-card" data-category="strength">
-                    <div class="exercise-image">💪</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Strength</div>
-                        <h3 class="exercise-name">Barbell Bench Press</h3>
-                        <p class="exercise-desc">Master chest development with perfect form. Learn grip width, elbow angle, and ROM for maximum gains.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Chest Primary</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Beginner+</div>
-                        </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
+            <div class="about-grid">
+                <div class="about-visual">
+                    <div class="about-frame">
+                        <div class="about-corner-tl"></div>
+                        <div class="about-corner-br"></div>
+                        <img src="coach-photo.png" alt="Coach Saad" class="about-logo-img">
+                        <div class="about-pharmd-badge">PharmD</div>
                     </div>
                 </div>
-
-                <div class="exercise-card" data-category="strength">
-                    <div class="exercise-image">🦵</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Strength</div>
-                        <h3 class="exercise-name">Barbell Back Squat</h3>
-                        <p class="exercise-desc">Build leg strength with proper squat mechanics. Depth, bar position, and knee tracking guide included.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Legs Primary</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Intermediate</div>
-                        </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
+                <div class="about-text">
+                    <div class="dual-badge">
+                        <span>Doctor of Pharmacy</span>
+                        <span class="sep">•</span>
+                        <span>Certified Coach</span>
                     </div>
-                </div>
+                    <p>With a Doctor of Pharmacy degree and a passion for fitness, I bring a unique perspective to coaching. My pharmaceutical knowledge combined with fitness expertise creates a truly science-backed approach.</p>
+                    <p>I've transformed lives through personalized training programs, nutrition guidance, and a deep understanding of how your body responds to training at a <strong>cellular level</strong>.</p>
+                    <p>Every program is tailored to your goals, whether it's building muscle, losing fat, or achieving peak athletic performance.</p>
 
-                <div class="exercise-card" data-category="strength">
-                    <div class="exercise-image">💪</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Strength</div>
-                        <h3 class="exercise-name">Dumbbell Bicep Curl</h3>
-                        <p class="exercise-desc">Perfect arm isolation exercise. Learn proper shoulder angle, elbow position, and tempo for peak bicep engagement.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Biceps</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Beginner</div>
+                    <div class="about-stats">
+                        <div class="stat-box">
+                            <span class="stat-num">500+</span>
+                            <span class="stat-label">Clients Coached</span>
                         </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
-                    </div>
-                </div>
-
-                <div class="exercise-card" data-category="strength">
-                    <div class="exercise-image">💪</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Strength</div>
-                        <h3 class="exercise-name">Tricep Dips</h3>
-                        <p class="exercise-desc">Build powerful triceps with bodyweight or added resistance. Master range of motion and shoulder safety.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Triceps</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Intermediate</div>
+                        <div class="stat-box">
+                            <span class="stat-num">12+</span>
+                            <span class="stat-label">Years Experience</span>
                         </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
-                    </div>
-                </div>
-
-                <div class="exercise-card" data-category="strength">
-                    <div class="exercise-image">💪</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Strength</div>
-                        <h3 class="exercise-name">Deadlift</h3>
-                        <p class="exercise-desc">The ultimate posterior chain builder. Learn bar path, hip hinge, and neutral spine positioning for heavy lifts.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Full Body</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Advanced</div>
+                        <div class="stat-box">
+                            <span class="stat-num">95%</span>
+                            <span class="stat-label">Success Rate</span>
                         </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
-                    </div>
-                </div>
-
-                <div class="exercise-card" data-category="strength">
-                    <div class="exercise-image">💪</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Strength</div>
-                        <h3 class="exercise-name">Overhead Press</h3>
-                        <p class="exercise-desc">Develop shoulder strength and stability. Learn leg drive, core bracing, and bar path for strict pressing.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Shoulders</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Intermediate</div>
-                        </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
-                    </div>
-                </div>
-
-                <!-- Cardio Exercises -->
-                <div class="exercise-card" data-category="cardio">
-                    <div class="exercise-image">🏃</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Cardio</div>
-                        <h3 class="exercise-name">Running Technique</h3>
-                        <p class="exercise-desc">Master efficient running form. Cadence, stride length, breathing patterns, and injury prevention strategies.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Cardiovascular</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Beginner</div>
-                        </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
-                    </div>
-                </div>
-
-                <div class="exercise-card" data-category="cardio">
-                    <div class="exercise-image">🚴</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Cardio</div>
-                        <h3 class="exercise-name">Cycling Basics</h3>
-                        <p class="exercise-desc">Build endurance and leg strength. Learn positioning, cadence, and training zones for optimal performance.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Cardiovascular</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Beginner</div>
-                        </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
-                    </div>
-                </div>
-
-                <div class="exercise-card" data-category="cardio">
-                    <div class="exercise-image">⛹️</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Cardio</div>
-                        <h3 class="exercise-name">Jump Rope</h3>
-                        <p class="exercise-desc">High-intensity cardio with coordination benefits. Rope height, wrist action, and interval training included.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Cardiovascular</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Beginner</div>
-                        </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
-                    </div>
-                </div>
-
-                <!-- Flexibility Exercises -->
-                <div class="exercise-card" data-category="flexibility">
-                    <div class="exercise-image">🧘</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Flexibility</div>
-                        <h3 class="exercise-name">Hamstring Stretch</h3>
-                        <p class="exercise-desc">Improve flexibility and reduce injury risk. Learn safe stretching angles and duration for mobility gains.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Flexibility</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Beginner</div>
-                        </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
-                    </div>
-                </div>
-
-                <div class="exercise-card" data-category="flexibility">
-                    <div class="exercise-image">🧘</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Flexibility</div>
-                        <h3 class="exercise-name">Shoulder Mobility</h3>
-                        <p class="exercise-desc">Enhance shoulder flexibility and health. Rotational stretches and activation drills included.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Flexibility</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Beginner</div>
-                        </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
-                    </div>
-                </div>
-
-                <!-- Core & Stability -->
-                <div class="exercise-card" data-category="core">
-                    <div class="exercise-image">🏋️</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Core</div>
-                        <h3 class="exercise-name">Plank Progression</h3>
-                        <p class="exercise-desc">Build core stability from basics to advanced. Proper alignment, breathing, and progression strategies.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Core</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Beginner</div>
-                        </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
-                    </div>
-                </div>
-
-                <div class="exercise-card" data-category="core">
-                    <div class="exercise-image">🏋️</div>
-                    <div class="exercise-info">
-                        <div class="exercise-category">Core</div>
-                        <h3 class="exercise-name">Russian Twist</h3>
-                        <p class="exercise-desc">Target obliques and rotational strength. Learn proper torso rotation and control for this effective movement.</p>
-                        <div class="exercise-details">
-                            <div class="detail-item"><span class="detail-icon">🎯</span> Core</div>
-                            <div class="detail-item"><span class="detail-icon">⭐</span> Beginner+</div>
-                        </div>
-                        <a href="#" class="exercise-cta">View Guide</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Floating Elements -->
-    <div class="float-socials">
-        <a href="#" class="float-social wa" data-label="WhatsApp">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.272-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.946 1.347l-.354.201-.368-.06c-1.186-.196-2.318-.62-3.285-1.23l-.42-.274-.458.146c-1.07.342-2.027.954-2.71 1.759-.779.962-1.2 2.131-1.1 3.35.033.528.13 1.05.291 1.554l.213.659-.655.21C.374 10.07 0 11.148 0 12.269c0 2.79 1.104 5.694 3.352 7.786 1.226 1.163 2.852 2.05 4.703 2.5.884.207 1.907.243 2.75.099 5.343-.808 9.276-5.24 9.514-10.46.076-1.7-.245-3.4-1.044-5.09-.574-1.237-1.4-2.323-2.4-3.114-.662-.52-1.456-.929-2.3-1.175-.484-.133-.987-.196-1.504-.196z"></path></svg>
-        </a>
-        <a href="#" class="float-social ig" data-label="Instagram">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.521 17.34c-.24.65-.934 1.347-1.85 1.447-1.054.12-3.064.065-4.671.065-1.607 0-3.616.055-4.671-.065-.918-.1-1.609-.797-1.849-1.447-.196-.503-.396-1.571-.471-2.804.076-1.233.276-2.301.471-2.804.24-.65.934-1.347 1.85-1.447 1.054-.12 3.064-.065 4.671-.065 1.607 0 3.616-.055 4.671.065.918.1 1.609.797 1.849 1.447.196.503.396 1.571.471 2.804-.076 1.233-.276 2.301-.471 2.804z"></path></svg>
-        </a>
-        <a href="#" class="float-social fb" data-label="Facebook">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
-        </a>
-        <a href="#" class="float-social tt" data-label="TikTok">
-            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.1 1.82 2.889 2.889 0 0 1 2.31-4.64 2.889 2.889 0 0 1 .88.144V9.58a6.026 6.026 0 0 0-3.33.955 6.025 6.025 0 1 0 10.86 4.43"></path></svg>
-        </a>
+    <div class="wave-bottom">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,64L80,74.7C160,85,320,107,480,106.7C640,107,800,85,960,80C1080,77,1200,91,1200,96L1200,0L0,0Z" fill="rgba(8, 8, 8, 1)"></path>
+        </svg>
     </div>
 
-    <a href="https://wa.me/1234567890" class="wa-float-btn" title="Chat with us on WhatsApp">
-        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.272-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.946 1.347l-.354.201-.368-.06c-1.186-.196-2.318-.62-3.285-1.23l-.42-.274-.458.146c-1.07.342-2.027.954-2.71 1.759-.779.962-1.2 2.131-1.1 3.35.033.528.13 1.05.291 1.554l.213.659-.655.21C.374 10.07 0 11.148 0 12.269c0 2.79 1.104 5.694 3.352 7.786 1.226 1.163 2.852 2.05 4.703 2.5.884.207 1.907.243 2.75.099 5.343-.808 9.276-5.24 9.514-10.46.076-1.7-.245-3.4-1.044-5.09-.574-1.237-1.4-2.323-2.4-3.114-.662-.52-1.456-.929-2.3-1.175-.484-.133-.987-.196-1.504-.196z"></path></svg>
-    </a>
+    <section id="plans">
+        <div class="section-inner">
+            <div class="plans-header">
+                <div class="section-tag">
+                    <span>COACHING PLANS</span>
+                </div>
+                <h2 class="section-title">Choose Your <em>Path</em></h2>
+                <div class="section-divider"></div>
+            </div>
 
-    <div class="chat-bubble" title="Chat Support">💬</div>
+            <div class="plans-grid">
+                <div class="plan-card">
+                    <div class="plan-icon">💪</div>
+                    <h3 class="plan-name">Starter</h3>
+                    <p class="plan-sub">4 Week Program</p>
+                    <p class="plan-desc">Perfect for beginners looking to build a foundation and establish healthy habits.</p>
+                    <ul class="plan-features">
+                        <li>4 weeks of training programming</li>
+                        <li>Basic nutrition guidance</li>
+                        <li>2 check-ins per week</li>
+                        <li>Community access</li>
+                    </ul>
+                    <a href="#" class="plan-cta">Learn More</a>
+                </div>
+
+                <div class="plan-card featured">
+                    <div class="plan-badge-popular">POPULAR</div>
+                    <div class="plan-icon">⚡</div>
+                    <h3 class="plan-name">Performance</h3>
+                    <p class="plan-sub">12 Week Program</p>
+                    <p class="plan-desc">Our most popular program with comprehensive training, nutrition, and coaching support.</p>
+                    <ul class="plan-features">
+                        <li>12 weeks of personalized training</li>
+                        <li>Detailed nutrition plan</li>
+                        <li>Weekly check-ins & support</li>
+                        <li>Progress tracking</li>
+                        <li>Community & recipes</li>
+                    </ul>
+                    <a href="#" class="plan-cta">Learn More</a>
+                </div>
+
+                <div class="plan-card">
+                    <div class="plan-icon">🏆</div>
+                    <h3 class="plan-name">Elite</h3>
+                    <p class="plan-sub">24 Week Program</p>
+                    <p class="plan-desc">For serious athletes seeking comprehensive transformation and ongoing elite support.</p>
+                    <ul class="plan-features">
+                        <li>24 weeks of elite training</li>
+                        <li>Advanced nutrition protocol</li>
+                        <li>Daily coaching support</li>
+                        <li>Supplement guidance</li>
+                        <li>Priority VIP access</li>
+                        <li>1-on-1 video calls</li>
+                    </ul>
+                    <a href="#" class="plan-cta">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="why">
+        <div class="section-inner">
+            <div class="why-grid">
+                <div>
+                    <div class="section-tag">
+                        <span>WHY CHOOSE US</span>
+                    </div>
+                    <h2 class="section-title">The <em>Difference</em></h2>
+                    <div class="section-divider"></div>
+
+                    <div class="why-features">
+                        <div class="why-feature">
+                            <div class="why-icon">🔬</div>
+                            <div>
+                                <h4>Science-Backed Methods</h4>
+                                <p>Pharmaceutical knowledge meets fitness science for evidence-based programming that works.</p>
+                            </div>
+                        </div>
+                        <div class="why-feature">
+                            <div class="why-icon">👥</div>
+                            <div>
+                                <h4>Personalized Programs</h4>
+                                <p>Every program is customized to your unique body, goals, and lifestyle for maximum results.</p>
+                            </div>
+                        </div>
+                        <div class="why-feature">
+                            <div class="why-icon">📊</div>
+                            <div>
+                                <h4>Advanced Tracking</h4>
+                                <p>Real-time data analysis to monitor progress and make intelligent adjustments to your program.</p>
+                            </div>
+                        </div>
+                        <div class="why-feature">
+                            <div class="why-icon">🎯</div>
+                            <div>
+                                <h4>Results Guaranteed</h4>
+                                <p>With a 95% success rate, our proven system delivers the transformation you're seeking.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="why-visual">
+                    <div class="pharmd-hexagon">
+                        <div class="hex-ring"></div>
+                        <div class="hex-ring"></div>
+                        <div class="hex-ring"></div>
+                        <div class="hex-center">Rx</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials">
+        <div class="section-inner">
+            <div class="testimonials-header">
+                <div class="section-tag">
+                    <span>TESTIMONIALS</span>
+                </div>
+                <h2 class="section-title">Real <em>Results</em></h2>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Saad transformed not just my body, but my entire relationship with fitness. The science-backed approach is unmatched."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">👨</div>
+                        <div>
+                            <div class="testimonial-name">Ahmed Hassan</div>
+                            <div class="testimonial-title">Fitness Enthusiast</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"The personalized nutrition plan combined with training was exactly what I needed. Results in 12 weeks!"</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">👩</div>
+                        <div>
+                            <div class="testimonial-name">Fatima Al-Zahra</div>
+                            <div class="testimonial-title">Busy Professional</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"I've worked with many trainers, but Saad's pharmaceutical background gives him an edge. Truly elite coaching."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">🧑</div>
+                        <div>
+                            <div class="testimonial-name">Omar Ibrahim</div>
+                            <div class="testimonial-title">Competitive Athlete</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cta-section">
+        <div class="section-inner">
+            <div class="cta-content">
+                <h2>Ready to Transform?</h2>
+                <p>Join 500+ clients who have already started their journey to elite fitness. Your transformation begins today.</p>
+                <button class="btn-gold">Start Your Free Consultation</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <a href="#about">About</a>
+                    <a href="#plans">Plans</a>
+                    <a href="#testimonials">Testimonials</a>
+                </div>
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <a href="#">FAQ</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Policies</a>
+                </div>
+                <div class="footer-col">
+                    <h3>Resources</h3>
+                    <a href="#">Blog</a>
+                    <a href="#">Guides</a>
+                    <a href="#">Community</a>
+                </div>
+                <div class="footer-col">
+                    <h3>About</h3>
+                    <p>RX Fitness by Saad — Where Pharmacy Meets Performance. Premium fitness coaching with science-backed methods.</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-copyright">&copy; 2024 RX Fitness by Saad. All rights reserved.</div>
+                <div class="footer-socials">
+                    <a href="https://wa.me/1234567890" class="footer-social">📱</a>
+                    <a href="https://instagram.com" class="footer-social">📷</a>
+                    <a href="https://facebook.com" class="footer-social">📘</a>
+                    <a href="https://tiktok.com" class="footer-social">🎵</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // Exercise Filter Functionality
-        const filterButtons = document.querySelectorAll('.exercise-filter-btn');
-        const exerciseCards = document.querySelectorAll('.exercise-card');
-
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const filter = button.getAttribute('data-filter');
-                
-                // Update active button
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-
-                // Filter cards
-                exerciseCards.forEach(card => {
-                    const category = card.getAttribute('data-category');
-                    
-                    if (filter === 'all' || category === filter) {
-                        card.style.display = 'flex';
-                        card.style.animation = 'fadeInUp 0.6s ease forwards';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        });
-
-        // Smooth scroll
+        // Smooth scroll behavior
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
+        });
+
+        // Loader
+        window.addEventListener('load', () => {
+            const loaderWrapper = document.getElementById('loader-wrapper');
+            loaderWrapper.style.opacity = '0';
+            setTimeout(() => {
+                loaderWrapper.style.pointerEvents = 'none';
+            }, 500);
         });
 
         // Custom cursor
         const cursor = document.getElementById('cursor');
         const cursorRing = document.getElementById('cursor-ring');
-
+        
         document.addEventListener('mousemove', (e) => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
@@ -1180,21 +1657,94 @@
             document.getElementById('scroll-progress').style.width = scrollPercent + '%';
         });
 
-        // Loader
-        window.addEventListener('load', () => {
-            const loader = document.getElementById('loader-wrapper');
-            loader.style.opacity = '0';
-            loader.style.pointerEvents = 'none';
-        });
-
-        // Nav scroll effect
+        // Navigation scroll effect
+        const nav = document.querySelector('nav');
         window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
                 nav.classList.add('scrolled');
             } else {
                 nav.classList.remove('scrolled');
             }
+        });
+
+        // Why features scroll animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.why-feature').forEach(feature => {
+            observer.observe(feature);
+        });
+
+        // Canvas animation for hero
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let particles = [];
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 1.5;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 50; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Chat bubble placeholder
+        document.querySelector('.chat-bubble').addEventListener('click', () => {
+            alert('Chat feature coming soon!');
         });
     </script>
 </body>
